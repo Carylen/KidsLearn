@@ -9,7 +9,7 @@ const getStudents = async() => {
         
         return students
     } catch (error) {
-        return json({message : error.message})
+        return {message : error.message}
     }
 }
 
@@ -50,7 +50,7 @@ const registerStudent = async(studentName, email, password) => {
 
         return storedStudent
     } catch (error) {
-        return json({message : error.message}) 
+        return {message : error.message}
     }
 }
 

@@ -59,7 +59,7 @@ router.post("/login", async(req, res) => {
         const login = await studentsServices.login(email, password)
 
         res.send(login)
-        res.redirect("/")
+        // res.redirect("/")
     } catch (error) {
         return {message: error.message}
     }

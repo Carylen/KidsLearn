@@ -3,6 +3,8 @@ const dotenv = require('dotenv')
 const cors = require('cors')
 const routerStudent = require('./student/studentController.js')
 const routerScore = require('./score/scoreController.js')
+
+
 const app = express()
 app.use(express.json())
 app.use(cors())

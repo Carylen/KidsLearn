@@ -1,7 +1,7 @@
 // const prisma = require('../../db/index')
 // const { body, validationResult } = require('express-validator')
 const repos = require('./studentRepository');
-const { json } = require('express');
+// const { json } = require('express');
 
 // const registerValidation = [
 //     body('email').isEmail().withMessage('Please use the valid E-Mail!'),
@@ -24,7 +24,7 @@ const findAll = async() => {
     const students = await repos.getStudents()
 
     if(!students){
-        return json({message : "students are empty"})
+        return {message : "students are empty"}
     }
 
     return students
@@ -37,7 +37,7 @@ const findById = async(id) => {
         return studentsById
     }
 
-    return json({message: `student with Id : ${id} not found!`})
+    return {message: `student with Id : ${id} not found!`}
 }
 
 const register = async(studentName, email, password) => {
