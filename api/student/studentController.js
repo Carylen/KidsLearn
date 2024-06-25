@@ -3,6 +3,7 @@ const studentsServices = require('./studentService')
 const { getStudent, getStudentEmail } = require('./studentRepository')
 const { body, validationResult } = require('express-validator')
 const { authToken, authorizeRole } = require('../middleware/auth')
+const { getAsg } = require('../assignment/asgRepository')
 
 
 const router = express.Router()
@@ -18,17 +19,17 @@ router.get("/", authToken, async(req, res) => {
         })
 });
 
-router.get("/:id", async(req, res) => {
-    const studentId = req.params.id;
-    if (!studentId) {
-        return res.status(400).send('Student ID is required');
-    }
+// router.get("/:id", async(req, res) => {
+//     const studentId = req.params.id;
+//     if (!studentId) {
+//         return res.status(400).send('Student ID is required');
+//     }
     
-    const studentById = await getStudent(parseInt(studentId))
+//     const studentById = await getStudent(parseInt(studentId))
    
-    res.send(studentById)
-    // const student = await studentsServices.findById(parseInt(studentId))
-});
+//     res.send(studentById)
+//     // const student = await studentsServices.findById(parseInt(studentId))
+// });
 
 router.get("/blabli", body('email').isEmail(), async(req, res, next) => {
     const { email } = req.body
@@ -62,6 +63,16 @@ router.post("/login", async(req, res) => {
         // res.redirect("/")
     } catch (error) {
         return {message: error.message}
+    }
+})
+
+router.get("/listAssignment", async(req, res) => {
+    try {
+        const asgLists = await getAsg()
+        
+        res.status(200).json({ asgLists })
+    } catch (error) {
+        res.status(500).json({message : error.message})
     }
 })
 
