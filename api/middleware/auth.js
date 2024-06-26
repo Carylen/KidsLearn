@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken')
+const { body, validationResult } = require('express-validator')
 
-const authToken = (req, res, next) => {
+const authUser = (req, res, next) => {
     const token = req.header('Authorization')?.split(' ')[1]
     if (!token) return res.status(401).json({ error: 'Access denied' });
 
@@ -23,7 +24,26 @@ const authorizeRole = (...roles) => {
     }
 }
 
+const studentLogin = () => {
+    return [
+        body('email').isEmail(),
+        body('password').isLength({ min: 8, max: 20 })
+    ]
+}
+
+const validation = (req, res, next) => {
+    const errors = validationResult(req)
+
+    if(errors){
+        res.status(400).json({ errors : errors.array().map(err => `${err.msg} for [${err.path}]`) })
+    }
+
+    next()
+}
+
 module.exports = {
-    authToken,
-    authorizeRole
+    authUser,
+    authorizeRole,
+    studentLogin,
+    validation
 }

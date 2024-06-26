@@ -2,15 +2,15 @@ const express = require('express')
 const studentsServices = require('./studentService')
 const { getStudent, getStudentEmail } = require('./studentRepository')
 const { body, validationResult } = require('express-validator')
-const { authToken, authorizeRole } = require('../middleware/auth')
+const { authUser, authorizeRole, studentLogin, validation } = require('../middleware/auth')
 const { getAsg } = require('../assignment/asgRepository')
+
 
 
 const router = express.Router()
 
-router.get("/", authToken, async(req, res) => {
-    // const allStudents = await studentsServices.findAll();
-    // res.send(`userId : ${req.user.userId}`)
+router.get("/", authUser, async(req, res) => {
+    
     res.json({
             userId: req.user.userId,
             userName: req.user.userName,
@@ -53,20 +53,19 @@ router.post("/register", async(req, res) => {
     }
 })
 
-router.post("/login", async(req, res) => {
+router.post("/login", studentLogin(), validation, async(req, res) => {
     try {
         const { email, password } = req.body
 
         const login = await studentsServices.login(email, password)
 
         res.json({login})
-        // res.redirect("/")
     } catch (error) {
         return {message: error.message}
     }
 })
 
-router.get("/listAssignment", async(req, res) => {
+router.get("/listAssignment", authUser, async(req, res) => {
     try {
         const asgLists = await getAsg()
         
