@@ -5,6 +5,7 @@ const authUser = (req, res, next) => {
     const token = req.header('Authorization')?.split(' ')[1]
     if (!token) return res.status(401).json({ error: 'Access denied' });
 
+    if(req.path.is)
     try {
         const verified = jwt.verify(token, 'hegi_gila_banget');
         req.user = verified;
@@ -35,10 +36,6 @@ const authorizeRole = (...roles) => {
         next();
     }
 }
-
-
-
-
 
 module.exports = {
     authUser,

@@ -1,4 +1,4 @@
-const prisma = require('../../db/index')
+// const prisma = require('../../db/index')
 const express = require('express')
 const scoreServices = require('./scoreServices')
 
@@ -7,7 +7,7 @@ const router = express.Router()
 router.get("/listScores", async(req, res) => {
     try {
         const scores = await scoreServices.findScores()
-        if(!scores){
+        if(scores.message){
             res.send("Data Not Found!")
         }
 
@@ -19,8 +19,11 @@ router.get("/listScores", async(req, res) => {
 
 router.get("/:id", async(req, res) => {
     try {
-        const scoreId = req.params.id
-        const score = await scoreServices.findScoresById(parseInt(scoreId))
+        const scoreId = parseInt(req.params.id)
+        const score = await scoreServices.findScoresById(scoreId)
+        // if(typeof scoreId === 'number'){
+        //     return res.status(404).json({message : '404 Not Found'})
+        // }
 
         res.status(200).send(score)
     } catch (error) {

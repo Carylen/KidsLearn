@@ -1,3 +1,4 @@
+const { empty } = require('@prisma/client/runtime/library')
 const prisma = require('../../db/index')
 
 const getAll = async() => {
@@ -7,21 +8,31 @@ const getAll = async() => {
 }
 
 const getById = async(userId) => {
-    const score = await prisma.scores.findMany({
-        where: {
-            studentId: userId
-        },
-        include: {
-            assignments:{
-                select: {
-                    title: true
-                }
+    try {
+        console.log(userId)
+        const score = await prisma.scores.findMany({
+            where: {
+                studentId: userId
             },
-            // students:true
-        },
-    })
+            include: {
+                assignments:{
+                    select: {
+                        title: true
+                    }
+                },
+                // students:true
+            },
+        })
+        console.log(`score : ${score}`)
+        if(score.length === 0){
+            throw new Error("Data Doesn't Exist..")
+            // return 
+        }
+        return score
+    } catch (error) {
+        return { message : error.message }
+    }
 
-    return score
 }
 
 // Register for every assignment when User Register

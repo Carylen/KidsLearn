@@ -8,7 +8,7 @@ const asgServices = require('../assignment/asgServices')
 const getById = async(id) => {
     const student = await prisma.student.findUnique({
         where: {
-            id: parseInt(id)
+            id: id
         }
     })
 

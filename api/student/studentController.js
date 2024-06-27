@@ -18,15 +18,15 @@ router.get("/", authUser, async(req, res) => {
         })
 });
 
-router.get("/:id", async(req, res) => {
-    const studentId = req.params.id
+// router.get("/:id", async(req, res) => {
+//     const studentId = req.params.id
 
-    const student = await studentsServices.findStudentById(parseInt(studentId))
-    if(!student){
-        return res.status(400).json({message : 'bad request'})
-    }
-    res.send(student)
-})
+//     const student = await studentsServices.findStudentById(parseInt(studentId))
+//     if(!student){
+//         return res.status(400).json({message : 'bad request'})
+//     }
+//     res.send(student)
+// })
 
 router.post("/register", studentRegister(), validation, async(req, res) => {
     try {
