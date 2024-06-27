@@ -9,7 +9,7 @@ const getAll = async() => {
 const getById = async(userId) => {
     const score = await prisma.scores.findMany({
         where: {
-            id: userId
+            studentId: userId
         },
         include: {
             assignments:{
