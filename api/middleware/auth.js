@@ -15,6 +15,18 @@ const authUser = (req, res, next) => {
     }
 }
 
+const validation = (req, res, next) => {
+    const errors = validationResult(req)
+
+    if(!errors.isEmpty()){
+        // res.status(400).json({ errors : errors.array().map(err => `${err.msg} for [${err.path}]`) })
+        res.status(400).json({ errors : errors.array() })
+    }
+    console.log(req.path, '\n',req.body)
+
+    next()
+}
+
 const authorizeRole = (...roles) => {
     return (req, res, next) => {
         if (!roles.includes(req.user.role)) {
@@ -24,26 +36,12 @@ const authorizeRole = (...roles) => {
     }
 }
 
-const studentLogin = () => {
-    return [
-        body('email').isEmail(),
-        body('password').isLength({ min: 8, max: 20 })
-    ]
-}
 
-const validation = (req, res, next) => {
-    const errors = validationResult(req)
 
-    if(errors){
-        res.status(400).json({ errors : errors.array().map(err => `${err.msg} for [${err.path}]`) })
-    }
 
-    next()
-}
 
 module.exports = {
     authUser,
     authorizeRole,
-    studentLogin,
-    validation
+    validation,
 }

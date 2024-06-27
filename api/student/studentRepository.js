@@ -1,23 +1,15 @@
 const prisma = require('../../db/index')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
+const scoreServices  = require('../score/scoreServices')
+const asgServices = require('../assignment/asgServices')
 
 
-const getStudents = async() => {
-    try {
-        const students = await prisma.student.findMany()
-        
-        return students
-    } catch (error) {
-        return {message : error.message}
-    }
-}
-
-const getStudent = async(id) => {
-    const student = await prisma.student.findFirst({
+const getById = async(id) => {
+    const student = await prisma.student.findUnique({
         where: {
-            id: id
-        },
+            id: parseInt(id)
+        }
     })
 
     if(!student){
@@ -40,6 +32,10 @@ const getStudentEmail = async(email) => {
 const registerStudent = async(studentName, email, password) => {
     try {
         const hashedPassword = await bcrypt.hash(password, 8)
+        const checkedEmail = await getStudentEmail(email)
+        if(checkedEmail){
+            throw new Error('Email already in use')
+        }
         const storedStudent = await prisma.student.create({
             data: {
                 email: email,
@@ -47,50 +43,65 @@ const registerStudent = async(studentName, email, password) => {
                 name: studentName
             }
         })
+        
+        // GET All Assignment for index paramater when .createScores(createMany)
+        const asg = await asgServices.findAsg()
 
-        return storedStudent
+        const storedScores = await scoreServices.registAsg(storedStudent.id, asg)
+
+        return {
+            data : storedStudent,
+            asg : storedScores
+        }
     } catch (error) {
         return {message : error.message}
     }
 }
 
 const loginStudent = async(email, password) => {
-    try {
-        const user = await prisma.student.findUnique({
-            where: {
-                email: email
-            },
-            include: {
-                scores:true
+    const user = await prisma.student.findUnique({
+        where: {
+            email: email
+        },
+        include: {
+            scores: {
+                include: {
+                    assignments:true
+                }
             }
-        })
-        if(!user){
-            return {message : "Credentials are Incorrect, please input a valid credentials!"}
         }
+    })
 
-        const validPassword = await bcrypt.compare(password, user.password);
-
-        if (!validPassword) {
-            return { error: 'Invalid credentials' }
-        }
-
-        // Return the token(header), payload, and secret_key
-        const token = jwt.sign({ 
-            userId: user.id, 
-            userEmail: user.email, 
-            userName: user.name,
-            userScores: user.scores
-            }, 'hegi_gila_banget', { expiresIn: '1h' });
-
-        return token;
-    } catch (error) {
-        return {message: error.message}
+    if(!user){
+        return {message : "Credentials are Incorrect, please input a valid credentials!"}
     }
+
+    // if email === studentEmail, check the matching credential (password)
+    const validPassword = await bcrypt.compare(password, user.password);
+    // If doesn't match, then send errorMessage
+    if (!validPassword) {
+        return { error: 'Invalid credentials' }
+    }
+    
+    // if email, password === credentials, build the payload and send it with JWT
+    const payload = {
+        userId: user.id, 
+        userEmail: user.email, 
+        userName: user.name,
+        userScores: user.scores.map(x => ({
+            Assignment: x.assignments.title,
+            Score: x.score
+        }))
+    }
+
+    // Return the token(header), payload, and secret_key
+    const token = jwt.sign(payload, 'hegi_gila_banget', { expiresIn: '1h' });
+
+    return token;
 }
 
 module.exports = {
-    getStudents,
-    getStudent,
+    getById,
     getStudentEmail,
     registerStudent,
     loginStudent

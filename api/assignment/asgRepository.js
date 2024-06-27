@@ -1,6 +1,6 @@
 const prisma = require('../../db/index')
 
-const getAsg = async() => {
+const getAll = async() => {
     try {
         const allAsg = await prisma.assignment.findMany()
     
@@ -10,6 +10,21 @@ const getAsg = async() => {
     }
 }
 
+const getById = async(id) => {
+    const asgById = await prisma.assignment.findUnique({
+        where: {
+            id: id
+        }
+    })
+
+    if(!asgById){
+        throw new Error(`Assignment doesn't exists!`)
+    }
+
+    return asgById
+}
+
 module.exports = {
-    getAsg
+    getAll,
+    getById
 }

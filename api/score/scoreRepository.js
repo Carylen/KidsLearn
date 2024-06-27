@@ -1,26 +1,46 @@
 const prisma = require('../../db/index')
 
-const getScores = async() => {
+const getAll = async() => {
     const scores = await prisma.scores.findMany()
 
     return scores
 }
 
-const getScore = async(asgId) => {
-    const score = await prisma.scores.findFirst({
+const getById = async(userId) => {
+    const score = await prisma.scores.findMany({
         where: {
-            id: asgId
+            id: userId
         },
         include: {
-            assignments:true,
-            students:true
-        }
+            assignments:{
+                select: {
+                    title: true
+                }
+            },
+            // students:true
+        },
     })
 
     return score
 }
 
+// Register for every assignment when User Register
+const createScores = async(userId, asg) => {
+    const insertScores = await prisma.scores.createMany({
+        data: asg.map(x => ({
+            studentId: userId,
+            asgId: x.id,
+            score: 0
+        }))
+    })
+
+    return insertScores
+}
+
+// const updateScore = async(userId, asgId)
+
 module.exports = {
-    getScores,
-    getScore
+    getAll,
+    getById,
+    createScores
 }

@@ -1,18 +1,17 @@
 const prisma = require('../../db/index')
 const express = require('express')
-const { getScores, getScore } = require('./scoreRepository')
-// const studentServices = require('../')
+const scoreServices = require('./scoreServices')
 
 const router = express.Router()
 
-router.get("/", async(req, res) => {
+router.get("/listScores", async(req, res) => {
     try {
-        const scores = await getScores()
+        const scores = await scoreServices.findScores()
         if(!scores){
             res.send("Data Not Found!")
         }
 
-        res.send(scores)
+        res.status(200).send(scores)
     } catch (error) {
         res.status(400).send("Client Error")
     }
@@ -20,10 +19,10 @@ router.get("/", async(req, res) => {
 
 router.get("/:id", async(req, res) => {
     try {
-        const asgId = req.params.id
-        const score = await getScore(parseInt(asgId))
+        const scoreId = req.params.id
+        const score = await scoreServices.findScoresById(parseInt(scoreId))
 
-        res.send(score)
+        res.status(200).send(score)
     } catch (error) {
         console.error(error)
         res.status(404).send(error)

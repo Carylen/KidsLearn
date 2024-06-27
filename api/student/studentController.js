@@ -1,10 +1,9 @@
 const express = require('express')
 const studentsServices = require('./studentService')
-const { getStudent, getStudentEmail } = require('./studentRepository')
-const { body, validationResult } = require('express-validator')
-const { authUser, authorizeRole, studentLogin, validation } = require('../middleware/auth')
-const { getAsg } = require('../assignment/asgRepository')
-
+const { authUser, authorizeRole, validation } = require('../middleware/auth')
+const { studentLogin, studentRegister } = require('../middleware/userValidations')
+const routerAsg = require('../assignment/asgController')
+const routerScore = require('../score/scoreController')
 
 
 const router = express.Router()
@@ -19,35 +18,30 @@ router.get("/", authUser, async(req, res) => {
         })
 });
 
-// router.get("/:id", async(req, res) => {
-//     const studentId = req.params.id;
-//     if (!studentId) {
-//         return res.status(400).send('Student ID is required');
-//     }
-    
-//     const studentById = await getStudent(parseInt(studentId))
-   
-//     res.send(studentById)
-//     // const student = await studentsServices.findById(parseInt(studentId))
-// });
+router.get("/:id", async(req, res) => {
+    const studentId = req.params.id
 
-router.get("/blabli", body('email').isEmail(), async(req, res, next) => {
-    const { email } = req.body
-    const error = validationResult(req)
-    const studentByEmail = await getStudentEmail(email)
-    if(!error.isEmpty()){
-        return res.json(error)
+    const student = await studentsServices.findStudentById(parseInt(studentId))
+    if(!student){
+        return res.status(400).json({message : 'bad request'})
     }
-    res.send(studentByEmail)
+    res.send(student)
 })
 
-router.post("/register", async(req, res) => {
+router.post("/register", studentRegister(), validation, async(req, res) => {
     try {
         const { name, email, password } = req.body
         
         const regist = await studentsServices.register(name, email, password)
-
-        res.json(regist).status(201)
+        // If ERROR
+        if(regist.message){
+            res.json({ message: regist.message}).status(401)
+        }
+        // IF !ERROR, THEN Return User and Status(OK)
+        else{
+            res.send(regist).status(201)
+        }
+    
     } catch (error) {
         res.json({message: error.message})
     }
@@ -57,22 +51,22 @@ router.post("/login", studentLogin(), validation, async(req, res) => {
     try {
         const { email, password } = req.body
 
-        const login = await studentsServices.login(email, password)
-
-        res.json({login})
+        const token = await studentsServices.login(email, password)
+        // IF ERROR
+        if(token.message){
+            res.json({ message: token.message })
+        }
+        // IF !ERROR
+        else{
+            res.json({ token })
+        }
     } catch (error) {
         return {message: error.message}
     }
 })
 
-router.get("/listAssignment", authUser, async(req, res) => {
-    try {
-        const asgLists = await getAsg()
-        
-        res.status(200).json({ asgLists })
-    } catch (error) {
-        res.status(500).json({message : error.message})
-    }
-})
+
+router.use("/asg", routerAsg)
+router.use("/scores", routerScore)
 
 module.exports = router;
