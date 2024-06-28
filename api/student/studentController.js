@@ -18,15 +18,18 @@ router.get("/", authUser, async(req, res) => {
         })
 });
 
-// router.get("/:id", async(req, res) => {
-//     const studentId = req.params.id
+router.get("/details/:id", async(req, res, next) => {
+    const studentId = parseInt(req.params.id)
 
-//     const student = await studentsServices.findStudentById(parseInt(studentId))
-//     if(!student){
-//         return res.status(400).json({message : 'bad request'})
-//     }
-//     res.send(student)
-// })
+    if(typeof studentId === 'string'){
+        next()
+    }
+    const student = await studentsServices.findStudentById(studentId)
+    if(!student){
+        return res.status(400).json({message : 'bad request'})
+    }
+    res.send(student)
+})
 
 router.post("/register", studentRegister(), validation, async(req, res) => {
     try {
@@ -66,7 +69,7 @@ router.post("/login", studentLogin(), validation, async(req, res) => {
 })
 
 
-router.use("/asg", routerAsg)
+router.use("/asg", routerAsg, authUser)
 router.use("/scores", routerScore)
 
 module.exports = router;

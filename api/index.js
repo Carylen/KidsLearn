@@ -3,6 +3,7 @@ const dotenv = require('dotenv')
 const cors = require('cors')
 const routerStudent = require('./student/studentController.js')
 const routerScore = require('./score/scoreController.js')
+const { logging } = require('../api/middleware/auth.js')
 
 
 const app = express()
@@ -21,7 +22,8 @@ const PORT = process.env.PORT
 //     });
 // });
 
-app.use("/students", routerStudent);
+app.use("/students", logging, routerStudent);
+
 app.use((req, res, next) => {
     res.status(404).json({ error: `404 Not Found` });
 });

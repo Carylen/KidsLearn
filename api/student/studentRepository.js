@@ -88,10 +88,11 @@ const loginStudent = async(email, password) => {
         userId: user.id, 
         userEmail: user.email, 
         userName: user.name,
-        userScores: user.scores.map(x => ({
-            Assignment: x.assignments.title,
-            Score: x.score
-        }))
+        userScores: user.scores
+        // userScores: user.scores.map(x => ({
+        //     Assignment: x.assignments.title,
+        //     Score: x.score
+        // }))
     }
 
     // Return the token(header), payload, and secret_key
