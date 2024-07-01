@@ -7,16 +7,23 @@ const getAll = async() => {
 }
 
 const editScores = async(id, newScore) => {
-    const updatedScores = await prisma.scores.update({
-        where: {
-            id: id
-        },
-        data: {
-            score: newScore
+    try {
+        const updatedScores = await prisma.scores.update({
+            where: {
+                id: id
+            },
+            data: {
+                score: newScore
+            }
+        })
+        if(!updatedScores){
+            throw new Error('Data Not Found')
         }
-    })
-
-    return updatedScores
+        return updatedScores
+        
+    } catch (error) {
+        return { message: error.message };
+    }
 }
 
 module.exports = {

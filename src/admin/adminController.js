@@ -29,9 +29,10 @@ router.put("/updateScores/:id", authorizeRole('ADMIN'), async(req, res) => {
         const { newScore } = req.body
         console.log(scoreId)
         const updatedScore = await adminRepos.editScores(scoreId, newScore)
-        if(!updatedScore){
+        if(updatedScore.message){
             // res.status(404).send(`Cannot Find Score with ID : ${scoreId}`)
-            throw new Error(`Canot find Score with ID : ${scoreId}`)
+            // throw new Error(`Canot find Score with ID : ${scoreId}`)
+            res.status(404).json({ message: updatedScore.message })
         }
         res.status(200).json(updatedScore)
     } catch (error) {
