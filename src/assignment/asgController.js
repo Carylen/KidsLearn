@@ -2,8 +2,8 @@ const router = require('express').Router()
 const asgServices = require('./asgServices')
 const { authUser } = require('../middleware/auth')
 
-router.use((req, res, next) => {
-    console.log("[ Router ASG - Middleware ")
+router.use(authUser, (req, res, next) => {
+    console.log("[ Router ASG - Middleware ]")
     if(!authUser){
         res.status(403).json({ message : 'Not Authorized' })
     }else {
