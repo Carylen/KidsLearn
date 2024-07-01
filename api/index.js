@@ -1,9 +1,9 @@
 const express = require('express')
 const dotenv = require('dotenv')
 const cors = require('cors')
-const routerStudent = require('./api/student/studentController.js')
-const routerAdmin = require('./api/admin/adminController.js')
-const { logging, authUser } = require('./api/middleware/auth.js')
+const routerStudent = require('../src/student/studentController.js')
+const routerAdmin = require('../src/admin/adminController.js')
+const { logging, authUser } = require('../src/middleware/auth.js')
 // const { authorizeRole } = require('./middleware/auth.js')
 
 const app = express()
