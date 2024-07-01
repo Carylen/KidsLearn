@@ -1,6 +1,6 @@
 const router = require('express').Router()
 const { authUser, authorizeRole } = require('../middleware/auth')
-const adminServices = require('./adminServices')
+const adminRepos = require('./adminRepository')
 
 // router.use(authUser, (req, res) => {
     
@@ -11,7 +11,7 @@ const adminServices = require('./adminServices')
 
 router.get("/listScores", authorizeRole('ADMIN'), async(req, res) => {
     try {
-        const scores = await adminServices.findScores()
+        const scores = await adminRepos.getAll()
         if(scores.message){
             res.send("Data Not Found!")
         }
@@ -32,7 +32,7 @@ router.put("/updateScores/:id", authorizeRole('ADMIN'), async(req, res) => {
         const scoreId = parseInt(req.params.id)
         const { newScore } = req.body
         console.log(scoreId)
-        const updatedScore = await adminServices.updateScores(scoreId, newScore)
+        const updatedScore = await adminRepos.editScores(scoreId, newScore)
         if(!updatedScore){
             res.status(404).send(`Cannot Find Score with ID : ${scoreId}`)
         }
