@@ -23,10 +23,6 @@ router.get("/listScores", authorizeRole('ADMIN'), async(req, res) => {
 })
 
 router.put("/updateScores/:id", authorizeRole('ADMIN'), async(req, res) => {
-    // const userId= req.user.userId
-    // const userName= req.user.userName
-    // const userEmail= req.user.userEmail
-    // const userScores= req.user.userScores
     try {
         
         const scoreId = parseInt(req.params.id)
@@ -34,7 +30,8 @@ router.put("/updateScores/:id", authorizeRole('ADMIN'), async(req, res) => {
         console.log(scoreId)
         const updatedScore = await adminRepos.editScores(scoreId, newScore)
         if(!updatedScore){
-            res.status(404).send(`Cannot Find Score with ID : ${scoreId}`)
+            // res.status(404).send(`Cannot Find Score with ID : ${scoreId}`)
+            throw new Error(`Canot find Score with ID : ${scoreId}`)
         }
         res.status(200).json(updatedScore)
     } catch (error) {
