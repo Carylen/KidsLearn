@@ -1,10 +1,8 @@
 
 const repos = require('./studentRepository');
-// const { getAsg } = require('../assignment/asgServices');
-// const { getById } = require('../assignment/asgRepository');
 
-const register = async(studentName, email, password) => {
-    return await repos.registerStudent(studentName, email, password)
+const register = async(studentName, email, password, role) => {
+    return await repos.registerStudent(studentName, email, password, role)
 }
 
 const login = async(email, password) => {

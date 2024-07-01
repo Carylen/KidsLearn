@@ -1,6 +1,6 @@
 const express = require('express')
 const studentsServices = require('./studentService')
-const { authUser, authorizeRole, validation } = require('../middleware/auth')
+const { authUser, validation } = require('../middleware/auth')
 const { studentLogin, studentRegister } = require('../middleware/userValidations')
 const routerAsg = require('../assignment/asgController')
 const routerScore = require('../score/scoreController')
@@ -33,9 +33,9 @@ router.get("/details/:id", async(req, res, next) => {
 
 router.post("/register", studentRegister(), validation, async(req, res) => {
     try {
-        const { name, email, password } = req.body
+        const { name, email, password, role } = req.body
         
-        const regist = await studentsServices.register(name, email, password)
+        const regist = await studentsServices.register(name, email, password, role)
         // If ERROR
         if(regist.message){
             res.json({ message: regist.message}).status(401)
@@ -70,6 +70,6 @@ router.post("/login", studentLogin(), validation, async(req, res) => {
 
 
 router.use("/asg", routerAsg, authUser)
-router.use("/scores", routerScore)
+router.use("/scores", routerScore),
 
 module.exports = router;

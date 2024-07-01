@@ -8,8 +8,11 @@ const authUser = (req, res, next) => {
 
     try {
         const verified = jwt.verify(token, 'hegi_gila_banget');
-        req.user = verified;
+        req.user = verified
+
+        // logging in the server
         console.log(verified)
+        console.log('\n ------------------------------')
         next();
     } catch (error) {
         res.status(400).json({ error: 'Invalid token' });
@@ -28,19 +31,22 @@ const validation = (req, res, next) => {
     next()
 }
 
-const authorizeRole = (...roles) => {
+const authorizeRole = (roles) => {
     return (req, res, next) => {
-        if (!roles.includes(req.user.role)) {
+        // console.log(`ADMIN : ${JSON.stringify(req.user)} with role ${req.user.role}`)
+        console.log('ADMIN :\n')
+        console.log(req.user)
+        if (!req.user || !roles === req.user.role) {
             return res.status(403).json({ error: 'Forbidden' });
         }
         next();
-    }
+    }   
 }
 
 const logging = (req, res, next) => {
     if(req){
         // const body = JSON.stringify(req)
-        console.log(`\n[ REQUEST IN ] : ${ req.path }\n`)
+        console.log(`\n[ REQUEST PATH  : ${ req.path }]\n`)
     }
     else{
         res.json({ message: '404 - Page Not Found' })

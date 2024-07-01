@@ -29,7 +29,7 @@ const getStudentEmail = async(email) => {
     return studentEmail
 }
 
-const registerStudent = async(studentName, email, password) => {
+const registerStudent = async(studentName, email, password, role) => {
     try {
         const hashedPassword = await bcrypt.hash(password, 8)
         const checkedEmail = await getStudentEmail(email)
@@ -40,10 +40,14 @@ const registerStudent = async(studentName, email, password) => {
             data: {
                 email: email,
                 password: hashedPassword,
-                name: studentName
+                name: studentName,
+                role: role,
             }
         })
-        
+
+        if(role === 'ADMIN'){
+            return { data : storedStudent }
+        }
         // GET All Assignment for index paramater when .createScores(createMany)
         const asg = await asgServices.findAsg()
 
@@ -88,6 +92,7 @@ const loginStudent = async(email, password) => {
         userId: user.id, 
         userEmail: user.email, 
         userName: user.name,
+        userRole: user.role,
         userScores: user.scores
         // userScores: user.scores.map(x => ({
         //     Assignment: x.assignments.title,

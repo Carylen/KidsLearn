@@ -21,14 +21,14 @@ model Student {
   name String
   role Role @default(USER)
   scores Scores[]
-  assignments Assignment[]
+  // assignments Assignment[]
 }
 
 model Assignment {
   id Int @id @default(autoincrement())
   title String @unique
   scores Scores[]
-  students Student[]
+  // students Student[]
 }
 
 model Scores {
