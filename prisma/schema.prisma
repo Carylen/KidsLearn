@@ -35,6 +35,7 @@ model Scores {
   id Int @id @default(autoincrement())
   studentId Int 
   asgId Int
+  experiment Int @default(autoincrement())
   score Int
   students Student @relation(fields: [studentId], references: [id])
   assignments Assignment @relation(fields: [asgId], references: [id])

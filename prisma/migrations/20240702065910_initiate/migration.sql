@@ -25,6 +25,7 @@ CREATE TABLE "Scores" (
     "id" SERIAL NOT NULL,
     "studentId" INTEGER NOT NULL,
     "asgId" INTEGER NOT NULL,
+    "experiment" SERIAL NOT NULL,
     "score" INTEGER NOT NULL,
 
     CONSTRAINT "Scores_pkey" PRIMARY KEY ("id")

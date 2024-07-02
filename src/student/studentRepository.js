@@ -41,7 +41,7 @@ const registerStudent = async(studentName, email, password, role) => {
                 email: email,
                 password: hashedPassword,
                 name: studentName,
-                role: role,
+                role: role
             }
         })
 

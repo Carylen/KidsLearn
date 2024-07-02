@@ -3,7 +3,7 @@ const { body } = require('express-validator')
 const studentLogin = () => {
     return [
         body('email').isEmail().withMessage('Please input a valid E-mail'),
-        body('password').isLength({ min: 8, max: 20 })
+        body('password').isLength({ min: 5, max: 20 })
     ]
 }
 

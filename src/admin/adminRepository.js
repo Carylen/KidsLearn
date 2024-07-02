@@ -1,6 +1,6 @@
 const prisma = require('../../db/index')
 
-const getAll = async() => {
+const getAllScores = async() => {
     const scores = await prisma.scores.findMany()
 
     return scores
@@ -27,6 +27,6 @@ const editScores = async(id, newScore) => {
 }
 
 module.exports = {
-    getAll,
+    getAllScores,
     editScores
 }

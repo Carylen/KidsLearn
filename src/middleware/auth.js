@@ -33,13 +33,15 @@ const validation = (req, res, next) => {
 
 const authorizeRole = (roles) => {
     return (req, res, next) => {
-        // console.log(`ADMIN : ${JSON.stringify(req.user)} with role ${req.user.role}`)
+        // LOGGING FOR USER ADMIN
         console.log('ADMIN :\n')
         console.log(req.user)
-        if (!req.user || !roles === req.user.role) {
+
+        if (!req.user || roles !== req.user.userRole) {
             return res.status(403).json({ error: 'Forbidden' });
+        }else{
+            next();
         }
-        next();
     }   
 }
 

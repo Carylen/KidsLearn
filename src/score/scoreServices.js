@@ -1,7 +1,7 @@
 const scoreRepos = require('./scoreRepository')
 
 const findScoresById = async(id) => {
-    return await scoreRepos.getById(id)
+    return await scoreRepos.getScoresById(id)
 }
 
 const registAsg = async(userId, asg) => {

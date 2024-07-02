@@ -69,7 +69,7 @@ router.post("/login", studentLogin(), validation, async(req, res) => {
 })
 
 
-router.use("/asg", routerAsg, authUser)
+router.use("/asg", routerAsg)
 router.use("/scores", routerScore),
 
 module.exports = router;

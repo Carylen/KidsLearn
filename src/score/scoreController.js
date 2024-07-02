@@ -1,18 +1,20 @@
 const express = require('express')
 const scoreServices = require('./scoreServices')
+const { scores } = require('../../db')
 
 const router = express.Router()
 
 router.get("/:id", async(req, res) => {
-    try {
-        const scoreId = parseInt(req.params.id)
-        const score = await scoreServices.findScoresById(scoreId)
+    const scoreId = parseInt(req.params.id)
 
-        res.status(200).send(score)
-    } catch (error) {
-        console.error(error)
-        res.status(404).send(error)
+    const score = await scoreServices.findScoresById(scoreId)
+    // Validate if there exists error or no
+    if(score.message){
+        console.error(score.message)
+        return res.status(404).json({ message : score.message })
     }
+    // IF there's no error
+    return res.status(200).json( score )
 })
 
 

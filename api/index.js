@@ -3,7 +3,7 @@ const dotenv = require('dotenv')
 const cors = require('cors')
 const routerStudent = require('../src/student/studentController.js')
 const routerAdmin = require('../src/admin/adminController.js')
-const { logging, authUser } = require('../src/middleware/auth.js')
+const { logging, authUser, authorizeRole } = require('../src/middleware/auth.js')
 // const { authorizeRole } = require('./middleware/auth.js')
 
 const app = express()
@@ -23,7 +23,9 @@ const PORT = process.env.PORT
 // });
 
 app.use("/students", logging, routerStudent);
-app.use("/admin", logging, authUser, routerAdmin)
+// app.use(authUser)
+app.use("/admin", authUser, authorizeRole('ADMIN'), routerAdmin)
+// app.use("/admin", routerAdmin)
 
 app.use((req, res, next) => {
     res.status(404).json({ error: `404 Not Found` });
