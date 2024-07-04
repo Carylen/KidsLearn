@@ -10,12 +10,16 @@ const login = async(email, password) => {
 }
 
 const findStudentById = async(id) => {
-    return await repos.getById(id)
+    return await repos.getStudentById(id)
 }
 
+const updateStudentProfile = async(id, name) => {
+    return await repos.editStudentProfile(id, name)
+}
 module.exports = {
     register,
     login,
-    findStudentById
+    findStudentById,
+    updateStudentProfile
 }
 

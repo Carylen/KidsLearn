@@ -5,18 +5,23 @@ const scoreServices  = require('../score/scoreServices')
 const asgServices = require('../assignment/asgServices')
 
 
-const getById = async(id) => {
-    const student = await prisma.student.findUnique({
-        where: {
-            id: id
-        }
-    })
-
-    if(!student){
-        return {message : "Not Found"}
-    }
+const getStudentById = async(studentId) => {
+    try {
+        const student = await prisma.student.findUnique({
+            where: {
+                id: studentId
+            }
+        })
     
-    return student
+        if(!student){
+            throw new Error(`Cannot Find Student with ID : ${studentId}`)
+        }
+        
+        return student
+        
+    } catch (error) {
+        return { message: error.message };
+    }
 }
 
 const getStudentEmail = async(email) => {
@@ -27,6 +32,25 @@ const getStudentEmail = async(email) => {
     })
 
     return studentEmail
+}
+
+const editStudentProfile = async(studentId, newName) => {
+    try {
+        const editedProfile = await prisma.student.update({
+            where: {
+                id: studentId
+            },
+            data: {
+                name: newName
+            }
+        })
+        if(!editStudentProfile){
+            throw new Error(`Student Not Found!`)
+        }
+        return editStudentProfile
+    } catch (error) {
+        return { message : error.message }
+    }
 }
 
 const registerStudent = async(studentName, email, password, role) => {
@@ -107,8 +131,9 @@ const loginStudent = async(email, password) => {
 }
 
 module.exports = {
-    getById,
+    getStudentById,
     getStudentEmail,
+    editStudentProfile,
     registerStudent,
     loginStudent
 }

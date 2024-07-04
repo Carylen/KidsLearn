@@ -41,8 +41,26 @@ const createAsg = async(title) => {
 
     return newAsg
 }
+
+const deleteAsg = async(id) => {
+    try {
+        const deletedAsg = await prisma.assignment.delete({
+            where: {
+                id: id
+            }
+        })
+        
+        if(deleteAsg.length == 0){
+            throw new Error(`The Assignment Doesn't Exist..`)
+        }
+        return deleteAsg
+    } catch (error) {
+        return { message : error.message }
+    }
+}
 module.exports = {
     getAll,
     getById,
-    createAsg
+    createAsg,
+    deleteAsg
 }

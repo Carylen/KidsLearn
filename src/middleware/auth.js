@@ -21,14 +21,18 @@ const authUser = (req, res, next) => {
 
 const validation = (req, res, next) => {
     const errors = validationResult(req)
-
-    if(!errors.isEmpty()){
-        // res.status(400).json({ errors : errors.array().map(err => `${err.msg} for [${err.path}]`) })
-        res.status(400).json({ errors : errors.array() })
+    try {
+        if(!errors.isEmpty()){
+            errors.throw()
+            // res.status(400).json({ errors : errors.array() })
+        }
+        console.log(req.path, '\n',req.body)
+    
+        next()
+        
+    } catch (error) {
+        return res.status(400).json(error)
     }
-    console.log(req.path, '\n',req.body)
-
-    next()
 }
 
 const authorizeRole = (roles) => {
