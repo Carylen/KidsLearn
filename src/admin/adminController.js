@@ -26,6 +26,8 @@ router.get("/listAsg", async (req, res) => {
   return res.status(200).json({ assignments });
 });
 
+router.put("/update")
+
 router.delete("/deleteAsg/:id", async(req, res) => {
     const asgId = parseInt(req.params.id)
     const deletedAsg = await asgRepos.deleteAsg(asgId)
@@ -46,12 +48,14 @@ router.get("/listStudents", async(req, res) => {
     return res.status(200).json(students)
 })
 
-router.delete("/deleteStudent", async(req, res) => {
-    const deletedStudent = await studentRepos.deleteStudent()
+router.delete("/deleteStudent/:id", async(req, res) => {
+    const studentId = parseInt(req.params.id)
+    const deletedStudent = await studentRepos.deleteStudent(studentId)
 
     if(deletedStudent.message){
-        
+        return res.status(404).json(deletedStudent.message)
     }
+    return res.status(200).json(deletedStudent)
 })
 /* ------------------------ SCORES HANDLER ------------------------ */
 router.get("/listScores", async (req, res) => {
@@ -83,7 +87,7 @@ router.put("/updateScores/:id", async (req, res) => {
     return res.status(200).json(updatedScore);
 });
 
-router.post("/deleteScore/:id", async (req, res) => {
+router.delete("/deleteScore/:id", async (req, res) => {
   try {
     const { scoreId } = req.body;
     const deleteScore = await scoreRepos.destroyScore(scoreId);
