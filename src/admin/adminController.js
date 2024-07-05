@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const scoreRepos = require("../score/scoreRepository");
 const asgRepos = require("../assignment/asgRepository");
+const studentRepos = require("../student/studentRepository")
 
 /** ------------------------ ASSIGNMENT HANDLER ------------------------ */
 router.post("/uploadAsg", async (req, res) => {
@@ -35,6 +36,23 @@ router.delete("/deleteAsg/:id", async(req, res) => {
     return res.status(200).json( deletedAsg )
 })
 
+/* ------------------------ STUDENTS HANDLER ------------------------ */
+router.get("/listStudents", async(req, res) => {
+    const students = await studentRepos.getAllStudent()
+
+    if(students.message){
+        return res.status(404).json(students.message)
+    }
+    return res.status(200).json(students)
+})
+
+router.delete("/deleteStudent", async(req, res) => {
+    const deletedStudent = await studentRepos.deleteStudent()
+
+    if(deletedStudent.message){
+        
+    }
+})
 /* ------------------------ SCORES HANDLER ------------------------ */
 router.get("/listScores", async (req, res) => {
   try {

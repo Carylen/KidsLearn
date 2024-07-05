@@ -4,6 +4,17 @@ const jwt = require('jsonwebtoken')
 const scoreServices  = require('../score/scoreServices')
 const asgServices = require('../assignment/asgServices')
 
+const getAllStudent = async() => {
+    try {
+        const students = await prisma.student.findMany()
+        
+        if(!students){
+            throw new Error(`Students Doesn't Exists...`)
+        }
+    } catch (error) {
+        return { message : error.message }
+    }
+}
 
 const getStudentById = async(studentId) => {
     try {
@@ -130,10 +141,26 @@ const loginStudent = async(email, password) => {
     return token;
 }
 
+const deleteStudent = async(studentId) => {
+    try {
+        const student = await prisma.student.delete({
+            where:{
+                id: studentId
+            }
+        })
+        if(!student){
+            throw new Error(`Cannot find student with ID : ${studentId}`)
+        }
+    } catch (error) {
+        return { message : error.message }
+    }
+}
 module.exports = {
+    getAllStudent,
     getStudentById,
     getStudentEmail,
     editStudentProfile,
     registerStudent,
-    loginStudent
+    loginStudent,
+    deleteStudent
 }
