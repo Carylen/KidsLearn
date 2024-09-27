@@ -88,5 +88,9 @@ router.put("/details/:id", authUser, studentProfile(), validation, async (req, r
   return res.status(200).json(updatedProfile);
 });
 
+// router.post("/reset-pass/:token", (req, res) => {
+
+// })
+
 router.use("/asg", routerAsg);
 router.use("/scores", routerScore), (module.exports = router);

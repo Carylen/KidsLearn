@@ -22,7 +22,7 @@ const PORT = process.env.PORT
 //     });
 // });
 
-app.use("/students", logging, routerStudent);
+app.use("/student", logging, routerStudent);
 // app.use(authUser)
 app.use("/admin", authUser, authorizeRole('ADMIN'), routerAdmin)
 // app.use("/admin", routerAdmin)
